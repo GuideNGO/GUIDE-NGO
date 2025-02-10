@@ -1,22 +1,45 @@
-let currentIndex = 0;
-const images = ["gallery1.jpg", "gallery2.jpg", "gallery3.jpg", "gallery4.jpg", "gallery5.jpg"];
+document.addEventListener("DOMContentLoaded", function () {
+    const images = document.querySelectorAll(".gallery img");
+    const lightbox = document.querySelector(".lightbox");
+    const lightboxImg = document.querySelector(".lightbox img");
+    const prevBtn = document.querySelector(".prev");
+    const nextBtn = document.querySelector(".next");
+    const closeBtn = document.querySelector(".close");
 
-function openImage(index) {
-    currentIndex = index;
-    document.getElementById("full-image").src = images[currentIndex];
-    document.getElementById("fullscreen-viewer").style.display = "flex";
-}
+    let currentIndex = 0;
 
-function closeImage() {
-    document.getElementById("fullscreen-viewer").style.display = "none";
-}
+    function openLightbox(index) {
+        currentIndex = index;
+        lightboxImg.src = images[currentIndex].getAttribute("data-full");
+        lightbox.style.display = "flex";
+    }
 
-function prevImage() {
-    currentIndex = (currentIndex === 0) ? images.length - 1 : currentIndex - 1;
-    document.getElementById("full-image").src = images[currentIndex];
-}
+    function closeLightbox() {
+        lightbox.style.display = "none";
+        lightboxImg.src = "";
+    }
 
-function nextImage() {
-    currentIndex = (currentIndex === images.length - 1) ? 0 : currentIndex + 1;
-    document.getElementById("full-image").src = images[currentIndex];
-}
+    function showNext() {
+        currentIndex = (currentIndex + 1) % images.length;
+        openLightbox(currentIndex);
+    }
+
+    function showPrev() {
+        currentIndex = (currentIndex - 1 + images.length) % images.length;
+        openLightbox(currentIndex);
+    }
+
+    images.forEach((img, index) => {
+        img.addEventListener("click", () => openLightbox(index));
+    });
+
+    closeBtn.addEventListener("click", closeLightbox);
+    nextBtn.addEventListener("click", showNext);
+    prevBtn.addEventListener("click", showPrev);
+
+    lightbox.addEventListener("click", (e) => {
+        if (e.target === lightbox) {
+            closeLightbox();
+        }
+    });
+});
